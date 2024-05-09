@@ -93,4 +93,109 @@ class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
             return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
         else:
             return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
-   
+
+
+class EmployeeList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+    
+    def get(self, request, *args, **kwargs):
+        user_id = request.user.id
+        requested_employee = get_object_or_404(Employee, id=user_id)
+        employees = Employee.objects.filter(company_id=requested_employee.company_id)
+        serialized_item = self.serializer_class(employees, many=True)
+        return Response(serialized_item.data)
+    
+    def post(self, request, *args, **kwargs):
+        if IsManager().has_permission(request, self):
+            # Extract data from the request
+            username = request.data.get('username')
+            password = request.data.get('password')
+            address = request.data.get('address')
+            designation = request.data.get('designation')
+            user_id = request.user.id
+
+            # Retrieve the existing Employee instance
+            emp = get_object_or_404(Employee, id=user_id)
+
+            # Create a new User instance
+            user = User.objects.create(username=username)
+            user.set_password(password)  # Set the password securely
+            user.save()
+
+            # Create data dictionary for creating Employee instance
+            employee_data = {
+                "user": user,
+                "address": address,
+                "designation": designation,
+                "company_id": emp.company_id
+            }
+
+            # Create a new Employee instance
+            employee = Employee.objects.create(**employee_data)
+            serializer = self.serializer_class(employee)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
+
+
+class EmployeeDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+    
+    def get(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        user_id = request.user.id
+        requested_employee = get_object_or_404(Employee, id=user_id)
+        employee = get_object_or_404(Employee, id=pk)
+        if requested_employee.company_id == employee.company_id:
+            serializer = self.serializer_class(employee)
+            return Response(serializer.data)
+        else:
+            return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
+    
+    def put(self, request, *args, **kwargs):
+        if IsManager().has_permission(request, self):
+            pk = kwargs['pk']
+            user_id = request.user.id
+            requested_employee = get_object_or_404(Employee, id=user_id)
+            employee = get_object_or_404(Employee, id=pk)
+            if requested_employee.company_id == employee.company_id:
+                serializer = self.serializer_class(employee, data=request.data)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+                return Response(serializer.data)
+            return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
+        
+    def patch(self, request, *args, **kwargs):
+        if IsManager().has_permission(request, self):
+            pk = kwargs['pk']
+            user_id = request.user.id
+            requested_employee = get_object_or_404(Employee, id=user_id)
+            employee = get_object_or_404(Employee, id=pk)
+            if requested_employee.company_id == employee.company_id:
+                serializer = self.serializer_class(employee, data=request.data, partial=True)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+                return Response(serializer.data)
+            return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
+        
+    def delete(self, request, *args, **kwargs):
+        if IsManager().has_permission(request, self):
+            pk = kwargs['pk']
+            user_id = request.user.id
+            requested_employee = get_object_or_404(Employee, id=user_id)
+            employee = get_object_or_404(Employee, id=pk)
+            if requested_employee.company_id == employee.company_id:
+                employee.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
+    
