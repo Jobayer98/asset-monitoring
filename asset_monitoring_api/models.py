@@ -6,13 +6,14 @@ class Company(models.Model):
     phone = models.CharField(max_length=30)
     email = models.EmailField(max_length=100)
     address = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     
     def __str__(self) -> str:
         return self.name
     
 
 class Employee(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.PROTECT)
     address = models.CharField(max_length=255)
     designation = models.CharField(max_length=100)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
