@@ -1,4 +1,4 @@
-# Django REST API Documentation
+# Asset Monitoring API Documentation
 
 ## Overview
 
@@ -22,7 +22,7 @@ Authentication is required for all API endpoints. The application uses token-bas
 
 #### Retrieve, Update, and Delete Company
 
-- **Endpoint:** `/api/companies/<company_id>/`
+- **Endpoint:** `/api/companies/{companyId}`
 - **Methods:** GET, PUT, PATCH, DELETE
 - **Description:**
   - GET: Retrieves details of a specific company.
@@ -42,7 +42,7 @@ Authentication is required for all API endpoints. The application uses token-bas
 
 #### Retrieve, Update, and Delete Employee
 
-- **Endpoint:** `/api/employees/<employee_id>/`
+- **Endpoint:** `/api/employees/{employeeId}`
 - **Methods:** GET, PUT, PATCH, DELETE
 - **Description:**
   - GET: Retrieves details of a specific employee within the user's company.
@@ -62,7 +62,7 @@ Authentication is required for all API endpoints. The application uses token-bas
 
 #### Retrieve, Update, and Delete Device
 
-- **Endpoint:** `/api/devices/<device_id>/`
+- **Endpoint:** `/api/devices/{deviceId}`
 - **Methods:** GET, PUT, PATCH, DELETE
 - **Description:**
   - GET: Retrieves details of a specific device within the user's company.
@@ -82,7 +82,7 @@ Authentication is required for all API endpoints. The application uses token-bas
 
 #### Retrieve, Update, and Delete Device Log
 
-- **Endpoint:** `/api/device-logs/<log_id>/`
+- **Endpoint:** `/api/device-logs/{logId}`
 - **Methods:** GET, PUT, DELETE
 - **Description:**
   - GET: Retrieves details of a specific device log (available only for users with Manager role).
