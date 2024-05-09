@@ -18,7 +18,7 @@ class Employee(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     
     def __str__(self) -> str:
-        return f'{self.user.first_name} {self.user.last_name}'
+        return self.user.username
     
 
 class Device(models.Model):
